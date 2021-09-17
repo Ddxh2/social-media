@@ -7,7 +7,6 @@ const { typeDefs, resolvers } = require("./graphql/schema");
 dotenv.config();
 
 const MONGODB = process.env.MONGODB;
-console.log(MONGODB);
 
 const server = new ApolloServer({
   typeDefs,
