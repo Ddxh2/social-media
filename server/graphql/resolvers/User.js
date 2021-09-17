@@ -12,7 +12,6 @@ const User = require("../../models/User");
 dotenv.config();
 
 const SECRET_KEY = process.env.SECRET_KEY;
-console.log(SECRET_KEY);
 
 const generateToken = (user) =>
   jsonWebToken.sign(

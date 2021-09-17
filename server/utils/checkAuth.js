@@ -1,7 +1,10 @@
 const jsonWebToken = require("jsonwebtoken");
 const { AuthenticationError } = require("apollo-server");
+const dotenv = require("dotenv");
 
-const { SECRET_KEY } = require("../config");
+dotenv.config();
+
+const SECRET_KEY = process.env.SECRET_KEY;
 
 module.exports = (context) => {
   // context = { ..., headers}
@@ -11,7 +14,6 @@ module.exports = (context) => {
     const token = authHeader.split("Bearer ")[1];
     if (!!token) {
       try {
-        console.log(token);
         const user = jsonWebToken.verify(token, SECRET_KEY);
         return user;
       } catch (error) {
