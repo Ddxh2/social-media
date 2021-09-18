@@ -1,6 +1,8 @@
 import React, { useReducer, createContext } from "react";
 import jsonWebTokenDecode from "jwt-decode";
 
+import { useInterval } from "../hooks";
+
 const initialState = { user: null };
 
 if (!!localStorage.getItem("jsonWebToken")) {
@@ -18,13 +20,17 @@ const AuthContext = createContext({
   logout: () => {},
 });
 
-const AUTH_ACTION_TYPES = { LOGOUT: "LOGOUT", LOGIN: "LOGIN" };
+const AUTH_ACTION_TYPES = {
+  LOGOUT: "LOGOUT",
+  LOGIN: "LOGIN",
+};
 
 const authReducer = (state, action) => {
   switch (action.type) {
     case AUTH_ACTION_TYPES.LOGIN:
       return { ...state, user: action.payload };
     case AUTH_ACTION_TYPES.LOGOUT:
+    case AUTH_ACTION_TYPES.AUTO_LOGOUT:
       return {
         ...state,
         user: null,
@@ -34,7 +40,7 @@ const authReducer = (state, action) => {
   }
 };
 
-const AuthProvider = (props) => {
+const AuthProvider = ({ onAutoLogout, ...props }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   const login = (userData) => {
@@ -46,6 +52,21 @@ const AuthProvider = (props) => {
     localStorage.removeItem("jsonWebToken");
     dispatch({ type: AUTH_ACTION_TYPES.LOGOUT });
   };
+
+  useInterval(() => {
+    if (!!localStorage.getItem("jsonWebToken")) {
+      const decodedToken = jsonWebTokenDecode(
+        localStorage.getItem("jsonWebToken")
+      );
+      if (decodedToken.exp * 1000 < Date.now()) {
+        localStorage.removeItem("jsonWebToken");
+        logout();
+        if (!!onAutoLogout) {
+          onAutoLogout();
+        }
+      }
+    }
+  }, 60000);
 
   return (
     <AuthContext.Provider

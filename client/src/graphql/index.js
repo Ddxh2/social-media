@@ -6,7 +6,13 @@ import {
 } from "./posts";
 import { LIKE_POST_MUTATION } from "./likes";
 import { CREATE_COMMENT_MUTATION, DELETE_COMMENT_MUTATION } from "./comments";
-import { LOGIN_USER, REGISTER_USER } from "./users";
+import {
+  GET_USER_PROFILE,
+  GET_USER_PROFILE_IMAGE,
+  LOGIN_USER,
+  REGISTER_USER,
+  UPDATE_USER,
+} from "./users";
 
 export {
   CREATE_POST_MUTATION,
@@ -16,6 +22,9 @@ export {
   LIKE_POST_MUTATION,
   CREATE_COMMENT_MUTATION,
   DELETE_COMMENT_MUTATION,
+  GET_USER_PROFILE,
+  GET_USER_PROFILE_IMAGE,
   LOGIN_USER,
   REGISTER_USER,
+  UPDATE_USER,
 };

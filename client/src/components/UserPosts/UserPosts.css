@@ -1,0 +1,10 @@
+.userPosts__title {
+  display: block !important;
+  text-align: center;
+  font-size: 2rem;
+  margin-top: 10px;
+}
+
+.userPosts__grid {
+  width: 100%;
+}

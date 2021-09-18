@@ -8,6 +8,7 @@ const {
   validateLoginInput,
 } = require("../../utils/validators");
 const User = require("../../models/User");
+const checkAuth = require("../../utils/checkAuth");
 
 dotenv.config();
 
@@ -25,6 +26,17 @@ const generateToken = (user) =>
   );
 
 module.exports = {
+  Query: {
+    getUserProfile: async (_, { username }) => {
+      const user = await User.findOne({ username });
+      if (!user) {
+        return {};
+      } else {
+        const { _id: id, username, createdAt, email, profileImage, bio } = user;
+        return { id, username, createdAt, email, profileImage, bio };
+      }
+    },
+  },
   Mutation: {
     register: async (
       _,
@@ -48,7 +60,7 @@ module.exports = {
           },
         });
       }
-      // TODO Hash password and create auth token
+
       password = await bcrypt.hash(password, 12);
 
       const newUser = new User({
@@ -56,6 +68,8 @@ module.exports = {
         username,
         password,
         createdAt: new Date().toISOString(),
+        profileImage: "",
+        bio: "",
       });
 
       const res = await newUser.save();
@@ -94,6 +108,23 @@ module.exports = {
         id: user._id,
         token,
       };
+    },
+    updateUser: async (_, { user }, context) => {
+      const { id: userId } = checkAuth(context);
+      try {
+        const newUser = await User.findByIdAndUpdate(userId, user, {
+          new: true,
+        });
+
+        const token = generateToken(newUser);
+        return {
+          ...newUser._doc,
+          id: newUser._id,
+          token,
+        };
+      } catch (error) {
+        throw new UserInputError("Error", { error });
+      }
     },
   },
 };

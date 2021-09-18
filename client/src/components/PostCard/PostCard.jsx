@@ -1,22 +1,26 @@
 import React, { useContext } from "react";
-import { Card, Image } from "semantic-ui-react";
+import { Card } from "semantic-ui-react";
 import moment from "moment";
 import { Link } from "react-router-dom";
 
 import { AuthContext } from "../../context/auth";
-import { LikeButton, CommentButton, DeleteButton } from "../";
+import { LikeButton, CommentButton, DeleteButton, CustomImage } from "../";
 
 const PostCard = ({
+  profileImage,
   post: { body, createdAt, id, username, likeCount, commentCount, likes },
 }) => {
   const { user } = useContext(AuthContext);
   return (
     <Card fluid>
       <Card.Content>
-        <Image
+        <CustomImage
+          as={Link}
+          to={`/user/${username}`}
           floated='right'
           size='mini'
-          src='https://react.semantic-ui.com/images/avatar/large/molly.png'
+          username={username}
+          src={profileImage}
         />
         <Card.Header>{username}</Card.Header>
         <Card.Meta as={Link} to={`/posts/${id}`}>

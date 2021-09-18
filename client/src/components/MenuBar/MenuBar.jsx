@@ -8,32 +8,47 @@ const MenuBar = () => {
   const { user, logout } = useContext(AuthContext);
   const [activeItem, setActiveItem] = useState("home");
 
+  const updateActiveItem = (newActiveItem) => setActiveItem(newActiveItem);
+
   useEffect(() => {
     const pathname = window.location.pathname;
-    const path = pathname === "/" ? "home" : pathname.substr(1);
-    setActiveItem(path);
-  }, []);
+    const path =
+      pathname === "/"
+        ? "home"
+        : pathname.substr(1).startsWith("user")
+        ? "profile"
+        : pathname.substr(1);
+    if (path !== activeItem) {
+      updateActiveItem(path);
+    }
+  });
 
-  const handleItemClick = (e, { name }) => setActiveItem(name);
+  const handleItemClick = (_, { name }) => setActiveItem(name);
 
   return (
     <Menu pointing secondary size='massive' color='teal'>
+      <Menu.Item
+        name='home'
+        active={activeItem === "home"}
+        onClick={handleItemClick}
+        as={Link}
+        to='/'
+      />
       {!!user ? (
         <>
-          <Menu.Item name='Home' active as={Link} to='/' />
+          <Menu.Item
+            name='profile'
+            active={activeItem === "profile"}
+            onClick={handleItemClick}
+            as={Link}
+            to={`/user/${user.username}`}
+          />
           <Menu.Menu position='right'>
             <Menu.Item name='Logout' onClick={logout} />
           </Menu.Menu>
         </>
       ) : (
         <>
-          <Menu.Item
-            name='home'
-            active={activeItem === "home"}
-            onClick={handleItemClick}
-            as={Link}
-            to='/'
-          />
           <Menu.Menu position='right'>
             <Menu.Item
               name='login'
