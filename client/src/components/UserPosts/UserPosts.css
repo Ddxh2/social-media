@@ -5,6 +5,12 @@
   margin-top: 10px;
 }
 
+.userPosts__statistics {
+  display: block !important;
+  text-align: center;
+  font-size: 2rem;
+}
+
 .userPosts__grid {
   width: 100%;
 }

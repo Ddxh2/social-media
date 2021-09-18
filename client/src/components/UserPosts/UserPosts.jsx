@@ -9,14 +9,14 @@ import "./UserPosts.css";
 
 const UserPosts = ({ username, profileImage }) => {
   const { loading, data: { getPosts } = {} } = useQuery(FETCH_POSTS_QUERY);
-  const processedPosts = useMemo(() => {
+  const [processedPosts, numPosts, totalLikes] = useMemo(() => {
     if (!!loading) {
-      return [];
+      return [[], 0, 0];
     } else {
       const userPosts = getPosts.filter(
         ({ username: postUsername }) => username === postUsername
       );
-      return userPosts.reduce(
+      const processedPosts = userPosts.reduce(
         (acc, curr) => {
           if (acc[acc.length - 1].length === 3) {
             acc.push([curr]);
@@ -27,12 +27,23 @@ const UserPosts = ({ username, profileImage }) => {
         },
         [[]]
       );
+      const numPosts = userPosts.length;
+      const totalLikes = userPosts.reduce(
+        (acc, curr) => acc + curr.likeCount,
+        0
+      );
+      return [processedPosts, numPosts, totalLikes];
     }
   }, [username, loading, getPosts]);
   return (
     <Grid className='userPosts__grid' columns={3} divided>
       <Grid.Row className='userPosts__title'>
         <h2>{username}'s Posts</h2>
+      </Grid.Row>
+      <Grid.Row className='userPosts__statistics'>
+        <h2>
+          Posts: {numPosts} Likes: {totalLikes}
+        </h2>
       </Grid.Row>
       {!!processedPosts &&
         processedPosts.map((postsRow, index) => (
