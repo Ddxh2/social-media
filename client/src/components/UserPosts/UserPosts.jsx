@@ -42,7 +42,7 @@ const UserPosts = ({ username, profileImage }) => {
       </Grid.Row>
       <Grid.Row className='userPosts__statistics'>
         <h2>
-          Posts: {numPosts} Likes: {totalLikes}
+          Posts: {numPosts} &nbsp;&nbsp; Likes: {totalLikes}
         </h2>
       </Grid.Row>
       {!!processedPosts &&
